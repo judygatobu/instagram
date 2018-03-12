@@ -19,6 +19,13 @@ class SignInViewController: UIViewController {
         
         
         
+        let shield = PFObject(className: "Armor")
+        shield["displayName"] = "Wooden Shield"
+        shield["fireProof"] = false
+        shield["rupees"] = 50
+        
+        
+        shield.saveInBackground()
 
         // Do any additional setup after loading the view.
     }
