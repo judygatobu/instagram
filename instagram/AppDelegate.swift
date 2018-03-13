@@ -20,6 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
  func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 
+ 
     
     Parse.initialize(with: ParseClientConfiguration(block: { (configuration: ParseMutableClientConfiguration) -> Void in
             configuration.applicationId = "instagram"
@@ -37,7 +38,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 
                 
                 
-                window?.rootViewController = storyboard.instantiateViewController(withIdentifier: "AuthenticatedViewController")
+                
+                
             }
             
             return true

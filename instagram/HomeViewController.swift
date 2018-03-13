@@ -7,29 +7,119 @@
 //
 
 import UIKit
+import Parse
 
-class HomeViewController: UIViewController {
+class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
+
+    
+    @IBOutlet weak var tableView: UITableView!
+    var postArr = [PostInsta]()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+     
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
+        
         // Do any additional setup after loading the view.
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    
+    
+    override func viewDidAppear(_ animated: Bool) {
+        fetch()
+    }
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "postcell", for: indexPath) as! PostTableViewCell
+    
+        
+        let currentPost = postArr[indexPath.row]
+        
+        cell.caption.text = currentPost.caption
+        cell.userNameLabel.text = currentPost.author.username
+        
+        if let PostImage = currentPost.media{
+            
+            PostImage.getDataInBackground(block: { (imageData, error) -> Void in
+                if let PostImageData = imageData {
+                    cell.postImage.image = UIImage(data:PostImageData)
+                }
+            })
+        }
+        
+        
+        
+    
+    return cell
     }
     
+    
+    
+    func fetch() {
+        
+      
 
-    /*
-    // MARK: - Navigation
+        let query = PFQuery(className:"Post")
+        query.cachePolicy = PFCachePolicy.networkElseCache
+        query.addDescendingOrder("createdAt")
+        query.includeKey("author")
+        query.limit = 20
+        
+        
+        self.postArr.removeAll(keepingCapacity: true)
+        
+        // fetch data asynchronously
+        query.findObjectsInBackground { (posts,error) -> Void in
+            
+            if let error = error {
+                print("Error: \(error) \(error.localizedDescription)")
+                return
+            }
+            
+            if let objects = posts {
+                
+                for (index, object) in objects.enumerated() {
+                    // Convert PFObject into Trip object
+                    let onePost = PostInsta(pfObject: object)
+                    self.postArr.append(onePost)
+                    self.tableView.reloadData()
+                    
+                }
+                
+            }
+            
+            
+        }
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        
+        
     }
-    */
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if  postArr != nil   {
+            return postArr.count
+        }
+        return 0
+       
+        
+        
+        
+        
+    }
+
+
+
+    @IBAction func onTapLogOut(_ sender: Any) {
+
+        PFUser.logOutInBackground { (error) in
+       
+      
+    self.performSegue(withIdentifier: "LogOutSeague", sender: self)
+        }
+    }
+    
+    
 
 }

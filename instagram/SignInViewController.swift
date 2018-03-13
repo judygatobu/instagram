@@ -19,13 +19,9 @@ class SignInViewController: UIViewController {
         
         
         
-        let shield = PFObject(className: "Armor")
-        shield["displayName"] = "Wooden Shield"
-        shield["fireProof"] = false
-        shield["rupees"] = 50
         
         
-        shield.saveInBackground()
+ 
 
         // Do any additional setup after loading the view.
     }
@@ -65,8 +61,13 @@ class SignInViewController: UIViewController {
                 print("User log in failed: \(error.localizedDescription)")
             } else {
                 print("User logged in successfully")
+             self.performSegue(withIdentifier: "LoginSeague", sender: self)
+                
                 // display view controller that needs to shown after successful login
+            
+            
             }
+            
         }
     }
     
@@ -92,7 +93,8 @@ class SignInViewController: UIViewController {
                 print("User Registered successfully")
                 // manually segue to logged in view
                 
-                
+                self.performSegue(withIdentifier: "LoginSeague", sender: self)
+
                 
             }
         }
